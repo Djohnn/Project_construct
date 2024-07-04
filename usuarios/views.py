@@ -14,6 +14,8 @@ def cadastrar_vendedor(request):
         vendedores = Users.objects.filter(cargo='V')
         return render(request, 'cadastrar_vendedor.html', {'vendedores': vendedores})
     if request.method == 'POST':
+        nome = request.POST.get('nome')
+        sobrenome = request.POST.get('sobrenome')
         email = request.POST.get('email')
         senha = request.POST.get('senha')
 
@@ -23,10 +25,16 @@ def cadastrar_vendedor(request):
             # TODO: ultilizar menssagens do django
             return HttpResponse('E-mail já existe')
         
-        user = Users.objects.create_user(username=email, email=email, password=senha, cargo='V')
+        user = Users.objects.create_user(username=email,
+                                         last_name=sobrenome,
+                                         first_name=nome,
+                                         email=email,
+                                         password=senha,
+                                         cargo='V')
        
         # TODO: redirecionar com uma mensagem
-        return HttpResponse('Conta Criada')
+        messages.add_message(request, messages.SUCCESS, 'Vendedor cadastrado com sucesso!')
+        return redirect(reverse('cadastrar_vendedor'))
 
 
 def login(request):
